@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/bin/env python3
 
 from pyVoiceText import VoiceText
 
@@ -18,4 +18,3 @@ if __name__ == "__main__":
     mykey=open('./key.txt', 'r').read(16)
     voicetext(mykey, 'Hello World', 'out1.wav', 100)
     voicetext(mykey, 'こんにちは世界', 'out2.wav', 300)
-
