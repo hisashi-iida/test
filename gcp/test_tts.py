@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+
+def synthesize_text(text):
+    """Synthesizes speech from the input string of text."""
+    from google.cloud import texttospeech
+    client = texttospeech.TextToSpeechClient()
+
+    input_text = texttospeech.types.SynthesisInput(text=text)
+
+    # Note: the voice can also be specified by name.
+    # Names of voices can be retrieved with client.list_voices().
+    voice = texttospeech.types.VoiceSelectionParams(
+#        language_code='en-US',
+        language_code='ja-JP',
+        ssml_gender=texttospeech.enums.SsmlVoiceGender.FEMALE)
+
+    audio_config = texttospeech.types.AudioConfig(
+        audio_encoding=texttospeech.enums.AudioEncoding.MP3,
+        speaking_rate=3)
+
+    response = client.synthesize_speech(input_text, voice, audio_config)
+
+    # The response's audio_content is binary.
+    with open('output.mp3', 'wb') as out:
+        out.write(response.audio_content)
+        print('Audio content written to file "output.mp3"')
+
+#synthesize_text('Hello World, My Name is google cloud platform text to speech. How do you think about my speech ? It is very smooth, don\'t you think so ?')
+synthesize_text('こんにちは、世界。私はgoogle cloud platform text to speech APIです。私の話はいかがでしょうか？凄くスムーズだと思いませんか？大脳辺縁系、扁桃体、難しい漢字も読めます。')
