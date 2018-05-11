@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-def synthesize_text(text, lang, speed, ofile):
+def synthesize_text(text, lang, name, speed, ofile):
     """Synthesizes speech from the input string of text."""
     from google.cloud import texttospeech
     client = texttospeech.TextToSpeechClient()
@@ -11,6 +11,7 @@ def synthesize_text(text, lang, speed, ofile):
     # Names of voices can be retrieved with client.list_voices().
     voice = texttospeech.types.VoiceSelectionParams(
         language_code=lang,
+        name=name,
         ssml_gender=texttospeech.enums.SsmlVoiceGender.FEMALE)
 
     audio_config = texttospeech.types.AudioConfig(
@@ -30,9 +31,12 @@ if __name__ == "__main__":
     if argv[3] == 'e':
         speed=1.0
         lang='en-US'
+        #name='en-US-Wavenet-A' # man
+        name='en-US-Wavenet-C' # woman
     else:
         speed=1.7
         lang='ja-JP'
-    synthesize_text(open(argv[1],'r').read(), lang, speed, argv[2])
+        name='ja-JP-Standard-A' # only 
+    synthesize_text(open(argv[1],'r').read(), lang, name, speed, argv[2])
 
 
