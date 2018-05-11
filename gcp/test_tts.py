@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-def synthesize_text(text):
+def synthesize_text(text, lang, speed, ofile):
     """Synthesizes speech from the input string of text."""
     from google.cloud import texttospeech
     client = texttospeech.TextToSpeechClient()
@@ -10,20 +10,29 @@ def synthesize_text(text):
     # Note: the voice can also be specified by name.
     # Names of voices can be retrieved with client.list_voices().
     voice = texttospeech.types.VoiceSelectionParams(
-#        language_code='en-US',
-        language_code='ja-JP',
+        language_code=lang,
         ssml_gender=texttospeech.enums.SsmlVoiceGender.FEMALE)
 
     audio_config = texttospeech.types.AudioConfig(
         audio_encoding=texttospeech.enums.AudioEncoding.MP3,
-        speaking_rate=3)
+        speaking_rate=speed)
 
     response = client.synthesize_speech(input_text, voice, audio_config)
 
     # The response's audio_content is binary.
-    with open('output.mp3', 'wb') as out:
+    with open(ofile, 'wb') as out:
         out.write(response.audio_content)
-        print('Audio content written to file "output.mp3"')
+        print('Audio content written to file "' + ofile + '"')
 
-#synthesize_text('Hello World, My Name is google cloud platform text to speech. How do you think about my speech ? It is very smooth, don\'t you think so ?')
-synthesize_text('こんにちは、世界。私はgoogle cloud platform text to speech APIです。私の話はいかがでしょうか？凄くスムーズだと思いませんか？大脳辺縁系、扁桃体、難しい漢字も読めます。')
+if __name__ == "__main__":
+    import sys
+    argv = sys.argv
+    if argv[3] == 'e':
+        speed=1.0
+        lang='en-US'
+    else:
+        speed=1.7
+        lang='ja-JP'
+    synthesize_text(open(argv[1],'r').read(), lang, speed, argv[2])
+
+
