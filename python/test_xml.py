@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/bin/env python3
 
 import xml.etree.ElementTree as et
 import sys
@@ -10,9 +10,11 @@ def xmlparse(fn):
         for grandchild in child:
             if grandchild.tag == '{http://purl.org/dc/elements/1.1/}title':
                 print(grandchild.text)
+                break
         for grandchild in child:
             if grandchild.tag == '{http://purl.org/dc/elements/1.1/}creator':
                 print(grandchild.text)
+                break
 
 
 if __name__ == "__main__":
