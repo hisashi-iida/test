@@ -2,12 +2,18 @@
 
 export GOOGLE_APPLICATION_CREDENTIALS=`pwd`/ttstest_sa.json
 
+test -d ${1} || exit -1;
+txtfile="`ls ${1}/*.txt | sort`"
+
+rm 00????.*
+rm *.wav
+
 NUM=1
 currfile=`printf "%06d" ${NUM}`
 test -f ${currfile}.txt && rm ${currfile}.txt
 total=0
 
-cat "${1}" | while read line; do
+cat "${txtfile}" | while read line; do
     echo "${line}" >> ${currfile}.txt
     nchars=`echo ${line} | wc -m`
     total=`echo "${total} + ${nchars}" | bc`
@@ -34,7 +40,7 @@ if test ${total} -gt 0; then
     time ./test_tts.py ${currfile}.txt ${currfile}.mp3 j
 fi
 
-for mp3file in `ls *.mp3`; do
+for mp3file in `ls 00*.mp3`; do
     bn=`basename ${mp3file} .mp3`
     wavfile=${bn}.wav
     ffmpeg -i ${mp3file} ${wavfile} > /dev/null
@@ -43,13 +49,16 @@ done
 sox `ls *.wav | sort` 000000.wav
 
 
-METAFILE=metadata.opf
+METAFILE=${1}/metadata.opf
 TITLE="`./parse_metadata.py ${METAFILE} t` (GCP TTS)"
 ARTIST=`./parse_metadata.py ${METAFILE} c`
 ALBUM="${TITLE}"
-CART="cover.jpg"
+CART="${1}/cover.jpg"
 
 #sox 000000.wav -r 44100 -c 2 "${TITLE}.wav" echo  1.0 0.75 100 0.3 reverb
 sox 000000.wav -r 44100 -c 2 "${TITLE}.wav" echo  1.0 0.3 100 0.05
 lame --tt "${TITLE}" --tl "${ALBUM}" --ta "${ARTIST}" --ti "${CART}" "${TITLE}.wav" "${TITLE}.mp3"
+
+rm 00????.*
+rm *.wav
 
