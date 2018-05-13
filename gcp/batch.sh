@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export GOOGLE_APPLICATION_CREDENTIALS=`pwd`/ttstest_sa.json
+
 NUM=1
 currfile=`printf "%06d" ${NUM}`
 test -f ${currfile}.txt && rm ${currfile}.txt
@@ -11,7 +13,15 @@ cat "${1}" | while read line; do
     total=`echo "${total} + ${nchars}" | bc`
 
     if test ${total} -gt 3000; then
-        ./test_tts.py ${currfile}.txt ${currfile}.mp3 j
+        if test -f ${currfile}.mp3; then
+            echo ${currfile}.mp3 is already exist
+        else
+            echo ${total}
+            for i in {1..10}; do
+                time ./test_tts.py ${currfile}.txt ${currfile}.mp3 j && break;
+                sleep 5;
+            done
+        fi
         NUM=`echo "${NUM} + 1" | bc`
         currfile=`printf "%06d" ${NUM}`
         test -f ${currfile}.txt && rm ${currfile}.txt
@@ -20,7 +30,8 @@ cat "${1}" | while read line; do
 done
 
 if test ${total} -gt 0; then
-    ./test_tts.py ${currfile}.txt ${currfile}.mp3 j
+    echo ${total}
+    time ./test_tts.py ${currfile}.txt ${currfile}.mp3 j
 fi
 
 for mp3file in `ls *.mp3`; do
@@ -29,15 +40,16 @@ for mp3file in `ls *.mp3`; do
     ffmpeg -i ${mp3file} ${wavfile} > /dev/null
 done
 
-sox `ls *.wav | sort` 999999.wav
+sox `ls *.wav | sort` 000000.wav
 
-sox 999999.wav -r 44100 -c 2 "${1}.wav" echo  1.0 0.75 100 0.3 reverb
 
 METAFILE=metadata.opf
-TITLE=`./parse_metadata.py ${METAFILE} t`
+TITLE="`./parse_metadata.py ${METAFILE} t` (GCP TTS)"
 ARTIST=`./parse_metadata.py ${METAFILE} c`
 ALBUM="${TITLE}"
 CART="cover.jpg"
 
-lame --tt "${TITLE}" --tl "${ALBUM}" --ta "${ARTIST}" --ti "${CART}" "${1}.wav" "${1}.mp3"
+#sox 000000.wav -r 44100 -c 2 "${TITLE}.wav" echo  1.0 0.75 100 0.3 reverb
+sox 000000.wav -r 44100 -c 2 "${TITLE}.wav" echo  1.0 0.3 100 0.05
+lame --tt "${TITLE}" --tl "${ALBUM}" --ta "${ARTIST}" --ti "${CART}" "${TITLE}.wav" "${TITLE}.mp3"
 
