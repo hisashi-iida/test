@@ -56,7 +56,7 @@ ALBUM="${TITLE}"
 CART="${1}/cover.jpg"
 
 #sox 000000.wav -r 44100 -c 2 "${TITLE}.wav" echo  1.0 0.75 100 0.3 reverb
-sox 000000.wav -r 44100 -c 2 "${TITLE}.wav" echo  1.0 0.3 100 0.05
+sox -v 3 000000.wav -r 44100 -c 2 "${TITLE}.wav" echo  1.0 0.3 100 0.05
 lame --tt "${TITLE}" --tl "${ALBUM}" --ta "${ARTIST}" --ti "${CART}" "${TITLE}.wav" "${TITLE}.mp3"
 
 rm 00????.*
