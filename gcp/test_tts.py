@@ -33,7 +33,8 @@ if __name__ == "__main__":
         #name='en-US-Wavenet-A' # man
         name='en-US-Wavenet-C' # woman
     else:
-        speed=1.7
+#        speed=1.7
+        speed=2.5
         lang='ja-JP'
         name='ja-JP-Standard-A' # only 
     synthesize_text(open(argv[1],'r').read(), lang, name, speed, argv[2])
