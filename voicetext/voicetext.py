@@ -2,11 +2,11 @@
 
 from pyVoiceText import VoiceText
 
-def voicetext(mykey, text, outfile, speed):
-    vt = VoiceText(mykey)
+def voicetext(textfile, outfile, speaker, speed):
+    vt = VoiceText(open('./key.txt', 'r').read(16))
     wave = vt.fetch(
-        text=text,
-        speaker='hikari',
+        text=open(textfile, 'r').read(),
+        speaker=speaker,
         emotion_level=1,
         pitch=100,
         speed=speed,
@@ -15,6 +15,8 @@ def voicetext(mykey, text, outfile, speed):
 
 
 if __name__ == "__main__":
-    mykey=open('./key.txt', 'r').read(16)
-    voicetext(mykey, 'Hello World', 'out1.wav', 100)
-    voicetext(mykey, 'こんにちは世界', 'out2.wav', 300)
+    import sys
+    argv = sys.argv
+    speaker='hikari'
+    speed=100
+    voicetext(argv[1], argv[2], speaker, speed)

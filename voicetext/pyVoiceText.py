@@ -12,24 +12,25 @@ class VoiceText(object):
         self.key = key
 
     def fetch(self, text, speaker, out=None, emotion=None,
-              emotion_level=1, pitch=100, speed=100, volume=100):
+              emotion_level=1, pitch=100, speed=100, volume=100, form='mp3'):
         params = {
             "text": text,
             "speaker": speaker,
             "pitch": pitch,
             "speed": speed,
-            "volume": volume
+            "volume": volume,
+            "format": form
         }
         if emotion:
             params["emotion"] = emotion
             params["emotion_level"] = emotion_level
 
-        wave = self._request(params)
+        mp3 = self._request(params)
         if out:
-            self.save(wave, out)
+            self.save(mp3, out)
             return True
 
-        return wave
+        return mp3
 
     def _request(self, params):
         auth = HTTPBasicAuth(self.key, "")
@@ -42,6 +43,6 @@ class VoiceText(object):
             message = content["error"]["message"]
             raise Exception("%s: %s" % (resp.status_code, message))
 
-    def save(self, wave, out):
+    def save(self, mp3, out):
         with open(out, "wb") as f:
-            f.write(wave)
+            f.write(mp3)

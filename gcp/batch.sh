@@ -24,7 +24,7 @@ cat "${txtfile}" | while read line; do
         else
             echo ${total}
             for i in {1..10}; do
-                time ./test_tts.py ${currfile}.txt ${currfile}.mp3 j && break;
+                time ./gcp_tts.py ${currfile}.txt ${currfile}.mp3 j && break;
                 sleep 5;
             done
         fi
