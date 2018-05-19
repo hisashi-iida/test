@@ -44,11 +44,11 @@ while true; do
     sleep 0.5
 done
 sleep 1
-rm list.txt
-for f in $(ls *.mp3 | sort); do
+for f in $(cat list.txt); do
     ffmpeg -i ${f} -ar 44100 ${f}.wav > /dev/null
     wavfiles="${wavfiles} ${f}.wav"
 done
+rm list.txt
 sox ${wavfiles} x1.wav
 rm 000*.txt 000*.mp3.wav 000*.mp3
 ffmpeg -i x1.wav -af "atempo=2" x2.wav > /dev/null
