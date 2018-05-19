@@ -51,12 +51,6 @@ for f in $(ls *.mp3 | sort); do
 done
 sox ${wavfiles} x1.wav
 rm 000*.txt 000*.mp3.wav 000*.mp3
-#ffmpeg -i x1.wav -af "atempo=0.7" x0_7.wav
-#ffmpeg -i x1.wav -af "atempo=1.5" x1_5.wav
 ffmpeg -i x1.wav -af "atempo=2" x2.wav > /dev/null
-#ffmpeg -i x1.wav -af "atempo=1.25,atempo=2" x2_5.wav
-#ffmpeg -i x1.wav -af "atempo=1.5,atempo=2" x3.wav
-#ffmpeg -i x1.wav -af "atempo=1.75,atempo=2" x3_5.wav
-#ffmpeg -i x1.wav -af "atempo=2,atempo=2" x4.wav
 
 play x2.wav
