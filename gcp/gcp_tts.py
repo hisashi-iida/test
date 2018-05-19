@@ -22,7 +22,6 @@ def synthesize_text(text, lang, name, speed, ofile):
     # The response's audio_content is binary.
     with open(ofile, 'wb') as out:
         out.write(response.audio_content)
-        print('Audio content written to file "' + ofile + '"')
 
 if __name__ == "__main__":
     import sys
