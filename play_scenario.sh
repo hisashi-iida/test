@@ -3,7 +3,7 @@ count=1
 test -f "${1}" || exit -1
 rm 000*.txt 000*.mp3.wav 000*.mp3 > /dev/null 2>&1
 rm x*.wav > /dev/null 2>&1
-test -f list.txt && rm list.txt
+test -f mp3files_list.txt && rm mp3files_list.txt
 cat ${1} | while read i; do
     head=${i:0:5}
     body="${i:5}"
@@ -28,29 +28,31 @@ cat ${1} | while read i; do
     ;;
     esac
     count=$(echo "${count} + 1" | bc)
-    echo ${mp3file} >> list.txt
+    echo ${mp3file} >> mp3files_list.txt
 done
 while true; do
-    tts_complete="true"
-    for f in $(cat list.txt); do
+    all_mp3files_completed="true"
+    for f in $(cat mp3files_list.txt); do
         if test ! -f ${f}; then
-            tts_complete="false"
+            all_mp3files_completed="false"
             break;
         fi
     done
-    if test "${tts_complete}" = "true"; then
+    if test "${all_mp3files_completed}" = "true"; then
         break;
     fi
-    sleep 0.5
+    sleep 0.1
 done
-sleep 1
-for f in $(cat list.txt); do
+sleep 0.1
+wavfile=""
+for f in $(cat mp3files_list.txt); do
     ffmpeg -i ${f} -ar 44100 ${f}.wav > /dev/null 2>&1
     wavfiles="${wavfiles} ${f}.wav"
 done
-rm list.txt
 sox ${wavfiles} x1.wav
-rm 000*.txt 000*.mp3.wav 000*.mp3
 ffmpeg -i x1.wav -af "atempo=2" x2.wav > /dev/null 2>&1
 
-#play x2.wav
+play x2.wav
+
+rm mp3files_list.txt
+rm 000*.txt 000*.mp3.wav 000*.mp3
